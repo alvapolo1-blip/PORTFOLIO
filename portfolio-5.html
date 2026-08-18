@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alvaro Apolo — Director & Editor</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  html[data-theme="dark"]{
+    --bg: #0a0a0a;
+    --fg: #f2f1ee;
+    --fg-strong: #ffffff;
+    --fg-muted: #7a7a76;
+    --line: #2a2a28;
+    --bg-invert: #f2f1ee;
+  }
+  html[data-theme="light"]{
+    --bg: #f2f1ee;
+    --fg: #14130f;
+    --fg-strong: #000000;
+    --fg-muted: #8f8d86;
+    --line: #dcdad2;
+    --bg-invert: #0a0a0a;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  a{ color: inherit; text-decoration:none; }
+  ::selection{ background: var(--fg); color: var(--bg); }
+
+  .grain{
+    position: fixed; inset: 0; pointer-events: none; z-index: 998;
+    opacity: 0.045; mix-blend-mode: overlay;
+  }
+
+  /* ---------- SCRUBBER (signature element) ---------- */
+  .scrubber{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 60px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+  .scrubber-track{
+    position: relative;
+    height: 2px;
+    background: var(--line);
+    margin-top: 0;
+  }
+  .scrubber-fill{
+    position: absolute; top:0; left:0; height: 100%;
+    width: 0%;
+    background: var(--fg);
+    transition: width 0.05s linear;
+  }
+  .scrubber-playhead{
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 9px; height: 9px;
+    background: var(--fg);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    transition: left 0.05s linear, background 0.4s ease;
+  }
+  .scrubber-marks{
+    position: relative;
+    height: 24px;
+  }
+  .scrubber-mark{
+    position: absolute;
+    top: 6px;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    white-space: nowrap;
+  }
+  .scrubber-mark.active{ color: var(--fg); }
+
+  header{
+    position: relative;
+    z-index: 201;
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    padding: 0 5vw;
+    height: 60px;
+  }
+
+  .brand{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+
+  .header-right{
+    display:flex;
+    align-items:center;
+    gap: 22px;
+  }
+
+  .timecode{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--fg-muted);
+  }
+
+  .theme-toggle{
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    background: none;
+    cursor: pointer;
+    position: relative;
+  }
+  .theme-toggle svg{
+    width: 16px; height: 16px;
+    transition: transform 0.5s cubic-bezier(.16,1,.3,1);
+  }
+  .theme-toggle .blade{ transition: opacity 0.4s ease, transform 0.4s ease; transform-origin: 12px 12px; }
+  html[data-theme="light"] .theme-toggle svg{ transform: rotate(45deg); }
+
+  /* ---------- HERO / SLATE ---------- */
+  .hero{
+    min-height: 100vh;
+    padding-top: 60px;
+    display:grid;
+    grid-template-columns: 1.4fr 1fr;
+    align-items: stretch;
+  }
+
+  .hero-left{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6vh 5vw;
+    border-right: 1px solid var(--line);
+  }
+
+  h1.hero-title{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 9vw, 7.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+  h1.hero-title em{
+    font-style: normal;
+    font-weight: 300;
+    color: var(--fg-muted);
+  }
+
+  .hero-sub{
+    margin-top: 28px;
+    max-width: 420px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--fg-muted);
+    font-weight: 300;
+  }
+
+  .hero-right{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6vh 4vw;
+    gap: 0;
+  }
+  .slate-label{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    margin-bottom: 28px;
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .slate-label::before{
+    content:'';
+    width:6px; height:6px;
+    border-radius: 50%;
+    background: var(--fg-strong);
+    animation: pulse 2s infinite ease-in-out;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+  .slate-row{
+    display:flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+  }
+  .slate-row:last-child{ border-bottom: 1px solid var(--line); }
+  .slate-key{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .slate-value{
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  @media (max-width: 860px){
+    .hero{ grid-template-columns: 1fr; }
+    .hero-left{ border-right: none; border-bottom: 1px solid var(--line); }
+  }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-head{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 5vw;
+    margin-bottom: 6vh;
+  }
+  .section-eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+  }
+  .section-title{
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  }
+  .section-count{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+  }
+
+  /* ---------- WORK ---------- */
+  .work{ padding: 16vh 0 12vh; border-top: 1px solid var(--line); }
+
+  .reel{ position: relative; border-top: 1px solid var(--line); }
+  .reel:last-child{ border-bottom: 1px solid var(--line); }
+
+  .reel-row{
+    display:flex; align-items:center; justify-content: space-between;
+    padding: 3.4vh 5vw; position: relative;
+    transition: padding-left 0.5s cubic-bezier(.16,1,.3,1);
+  }
+  .reel-row:hover{ padding-left: 7vw; }
+
+  .reel-index{ font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); width: 60px; flex-shrink: 0; }
+
+  .reel-title{
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4.2vw, 3.4rem);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    flex: 1;
+    transition: color 0.4s ease;
+  }
+  .reel-row:hover .reel-title{ color: var(--fg-strong); }
+
+  .reel-meta{
+    display:flex; align-items:center; gap: 40px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted); flex-shrink: 0;
+  }
+  .reel-meta .role{ text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .reel-thumb{
+    position: absolute; top: 50%; right: 5vw;
+    transform: translateY(-50%) scale(0.94);
+    width: 260px; height: 160px; overflow: hidden;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.16,1,.3,1);
+    z-index: 2;
+  }
+  .reel-row:hover .reel-thumb{ opacity: 1; transform: translateY(-50%) scale(1); }
+  .reel-thumb img{ width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.15); }
+
+  .work-note{
+    padding: 8vh 5vw 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-muted);
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 720px){
+    .reel-thumb{ display:none; }
+    .reel-meta{ gap: 16px; flex-direction: column; align-items: flex-end; }
+    .reel-row{ flex-wrap: wrap; gap: 14px; }
+    .reel-row:hover{ padding-left: 5vw; }
+  }
+
+  /* ---------- PROJECT OVERLAY (horizontal slide deck) ---------- */
+  .overlay{
+    position: fixed; inset: 0; z-index: 500;
+    background: var(--bg);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0s linear 0.5s;
+  }
+  .overlay.open{
+    opacity: 1; visibility: visible;
+    transition: opacity 0.5s ease, visibility 0s linear 0s;
+  }
+
+  .overlay-header{
+    position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+    display:flex; justify-content: space-between; align-items:center;
+    padding: 24px 5vw;
+  }
+  .overlay-title{
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.01em; text-transform: uppercase;
+    display:flex; align-items:center; gap: 12px;
+  }
+  .overlay-title span{
+    font-family: var(--font-mono); font-weight: 400; font-size: 11px;
+    color: var(--fg-muted); letter-spacing: 0.05em;
+  }
+  .overlay-close{
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    background: var(--bg); cursor: pointer;
+  }
+  .overlay-close svg{ width: 16px; height: 16px; }
+
+  .slides{
+    display:flex;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .slides::-webkit-scrollbar{ display:none; }
+
+  .slide{
+    flex: 0 0 100%;
+    width: 100%; height: 100%;
+    scroll-snap-align: start;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 5vw;
+    gap: 6vw;
+  }
+
+  .slide-media{
+    position: relative;
+    height: 78vh;
+    max-height: 780px;
+    aspect-ratio: 9/16;
+    justify-self: end;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: #000;
+  }
+  .slide-media video{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+    transition: filter 0.5s ease;
+  }
+  .slide.is-active .slide-media video{ filter: grayscale(0) contrast(1.02); }
+
+  .slide-sound{
+    position: absolute; bottom: 16px; right: 16px;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.25);
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer; z-index: 5;
+  }
+  .slide-sound svg{ width: 15px; height: 15px; color: #fff; }
+
+  .slide-info{ justify-self: start; max-width: 460px; }
+  .slide-index{
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted);
+    letter-spacing: 0.1em; margin-bottom: 20px; display:block;
+  }
+  .slide-heading{
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.8rem, 3.6vw, 3rem);
+    line-height: 1.02; text-transform: uppercase; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .slide-desc{
+    font-size: 15px; line-height: 1.65; color: var(--fg-muted); font-weight: 300;
+    margin-bottom: 32px;
+  }
+  .slide-tags{ display:flex; gap: 14px; flex-wrap: wrap; }
+  .slide-tags span{
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--fg-muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px;
+  }
+
+  @media (max-width: 860px){
+    .slide{ grid-template-columns: 1fr; padding: 14vh 6vw 4vh; gap: 4vh; overflow-y: auto; }
+    .slide-media{ height: 52vh; justify-self: center; }
+    .slide-info{ justify-self: center; text-align: center; }
+    .slide-tags{ justify-content: center; }
+  }
+
+  .overlay-nav{
+    position: absolute; top: 50%; left:0; right:0;
+    transform: translateY(-50%);
+    display:flex; justify-content: space-between;
+    padding: 0 3vw;
+    pointer-events: none;
+    z-index: 20;
+  }
+  .nav-btn{
+    pointer-events: all;
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    display:flex; align-items:center; justify-content:center;
+    cursor: pointer;
+  }
+  .nav-btn svg{ width: 16px; height: 16px; }
+  .nav-btn:disabled{ opacity: 0.25; cursor: default; }
+
+  .overlay-dots{
+    position: absolute; bottom: 28px; left: 0; right: 0;
+    display:flex; justify-content: center; gap: 10px; z-index: 20;
+  }
+  .overlay-dot{
+    width: 24px; height: 2px; background: var(--line); cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .overlay-dot.active{ background: var(--fg); }
+
+  @media (max-width: 860px){
+    .overlay-nav{ display:none; }
+  }
+
+  /* ---------- CINEMA OVERLAY (single-video launch pieces) ---------- */
+  .overlay.cinema .cinema-stage{
+    position: absolute; inset: 0;
+    display:flex; align-items:center; justify-content:center;
+    padding: 110px 5vw 120px;
+  }
+  .cinema-frame{
+    position: relative;
+    width: 100%; max-width: 1200px;
+    aspect-ratio: 16/9;
+    border: 1px solid var(--line);
+    background: #000;
+    overflow: hidden;
+  }
+  .cinema-frame video{ width: 100%; height: 100%; object-fit: cover; }
+
+  .cinema-caption{
+    position: absolute; bottom: 30px; left: 0; right: 0;
+    text-align: center; padding: 0 6vw;
+  }
+  .cinema-caption h3{
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
+    text-transform: uppercase; letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .cinema-caption p{
+    font-family: var(--font-body); font-size: 13px; font-weight: 300;
+    color: var(--fg-muted); max-width: 520px; margin: 0 auto; line-height: 1.55;
+  }
+
+  @media (max-width: 860px){
+    .overlay.cinema .cinema-stage{ padding: 90px 6vw 130px; }
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    min-height: 80vh;
+    display:flex; flex-direction: column; justify-content: center;
+    padding: 12vh 5vw;
+    border-top: 1px solid var(--line);
+  }
+
+  .contact-eyebrow{
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--fg-muted); margin-bottom: 28px;
+  }
+
+  .contact-title{
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    line-height: 1.02; max-width: 900px;
+    text-transform: uppercase; letter-spacing: -0.02em;
+    margin-bottom: 60px;
+  }
+  .contact-title em{ font-style: normal; font-weight: 300; color: var(--fg-muted); }
+
+  .contact-actions{ display:flex; flex-wrap: wrap; gap: 20px; align-items:center; }
+
+  .btn-primary{
+    font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 20px 40px; border: 1px solid var(--fg); border-radius: 999px;
+    display:inline-flex; align-items:center; gap: 12px;
+    transition: background 0.35s ease, color 0.35s ease, border-color 0.4s ease;
+  }
+  .btn-primary:hover{ background: var(--fg); color: var(--bg); }
+  .btn-primary svg{ width: 14px; height: 14px; transition: transform 0.35s ease; }
+  .btn-primary:hover svg{ transform: translate(3px,-3px); }
+
+  .contact-footer{
+    margin-top: 14vh;
+    display:flex; justify-content: space-between; align-items:flex-end; flex-wrap: wrap; gap: 20px;
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.05em; color: var(--fg-muted);
+  }
+  .contact-footer a{ transition: color 0.3s ease; }
+  .contact-footer a:hover{ color: var(--fg); }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation: none !important; transition: none !important; } }
+
+  @media (max-width: 720px){
+    header{ padding: 0 6vw; }
+    .hero-left, .hero-right{ padding-left:6vw; padding-right:6vw; }
+    .section-head{ padding: 0 6vw; flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="noiseFilter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#noiseFilter)"/>
+</svg>
+
+<div class="scrubber">
+  <header>
+    <div class="brand">Alvaro Apolo</div>
+    <div class="header-right">
+      <div class="timecode" id="timecode">00:00:00:00</div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Cambiar a modo claro">
+        <svg viewBox="0 0 24 24" fill="none">
+          <g class="blade">
+            <path d="M12 3 L15 9 L9 9 Z" fill="currentColor" opacity="0.9"/>
+            <path d="M21 12 L15 15 L15 9 Z" fill="currentColor" opacity="0.7"/>
+            <path d="M12 21 L9 15 L15 15 Z" fill="currentColor" opacity="0.9"/>
+            <path d="M3 12 L9 9 L9 15 Z" fill="currentColor" opacity="0.7"/>
+          </g>
+        </svg>
+      </button>
+    </div>
+  </header>
+  <div class="scrubber-track">
+    <div class="scrubber-fill" id="scrubFill"></div>
+    <div class="scrubber-playhead" id="scrubHead"></div>
+  </div>
+  <div class="scrubber-marks" id="scrubMarks"></div>
+</div>
+
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <h1 class="hero-title">Director<br><em>&amp; Editor</em></h1>
+    <p class="hero-sub">Ruedo, edito, cuento historias. Cortos, videoclips y marca.</p>
+  </div>
+  <div class="hero-right">
+    <div class="slate-label">En rodaje</div>
+    <div class="slate-row">
+      <span class="slate-key">Base</span>
+      <span class="slate-value">Lima, PE</span>
+    </div>
+    <div class="slate-row">
+      <span class="slate-key">Roles</span>
+      <span class="slate-value">Dirección / Edición</span>
+    </div>
+    <div class="slate-row">
+      <span class="slate-key">Disponibilidad</span>
+      <span class="slate-value">Sep 2026</span>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="work">
+  <div class="section-head">
+    <div>
+      <div class="section-eyebrow">Selección</div>
+      <div class="section-title">Trabajo destacado</div>
+    </div>
+    <div class="section-count">04 proyectos</div>
+  </div>
+
+  <div class="reel">
+    <div class="reel-row" data-project="redbull" role="button" tabindex="0" aria-label="Abrir proyecto Red Bull">
+      <span class="reel-index">01</span>
+      <span class="reel-title">Red Bull</span>
+      <span class="reel-meta">
+        <span class="role">Dirección &amp; Edición</span>
+        <span>2026</span>
+        <span>3 piezas</span>
+      </span>
+      <div class="reel-thumb">
+        <img src="assets/trofeo_poster.jpg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div class="reel">
+    <div class="reel-row" data-project="footloose" role="button" tabindex="0" aria-label="Abrir proyecto Footloose">
+      <span class="reel-index">02</span>
+      <span class="reel-title">Footloose</span>
+      <span class="reel-meta">
+        <span class="role">Edición</span>
+        <span>2026</span>
+        <span>3 cápsulas</span>
+      </span>
+      <div class="reel-thumb">
+        <img src="assets/footloose_capsula01_poster.jpg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div class="reel">
+    <div class="reel-row" data-project="danimoran" role="button" tabindex="0" aria-label="Abrir proyecto Danimoran Studio">
+      <span class="reel-index">03</span>
+      <span class="reel-title">Danimoran Studio</span>
+      <span class="reel-meta">
+        <span class="role">Dirección &amp; Edición</span>
+        <span>2026</span>
+        <span>Lanzamiento web</span>
+      </span>
+      <div class="reel-thumb">
+        <img src="assets/danimoran_poster.jpg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div class="reel">
+    <div class="reel-row" data-project="siclo" role="button" tabindex="0" aria-label="Abrir proyecto Siclo">
+      <span class="reel-index">04</span>
+      <span class="reel-title">Siclo</span>
+      <span class="reel-meta">
+        <span class="role">Edición</span>
+        <span>2026</span>
+        <span>Lanzamiento suscripción</span>
+      </span>
+      <div class="reel-thumb">
+        <img src="assets/siclo_poster.jpg" alt="">
+      </div>
+    </div>
+  </div>
+
+  <div class="work-note">Más proyectos próximamente — vuelve pronto.</div>
+</section>
+
+<!-- ============ FOOTLOOSE PROJECT OVERLAY ============ -->
+<div class="overlay" id="overlay-footloose">
+  <div class="overlay-header">
+    <div class="overlay-title">Footloose <span>— Cápsulas</span></div>
+    <button class="overlay-close" data-close aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6L18 18M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="slides" data-slides>
+    <div class="slide" data-index="0">
+      <div class="slide-media">
+        <video src="assets/footloose_capsula01.mp4" poster="assets/footloose_capsula01_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">01 / 03</span>
+        <h3 class="slide-heading">Cápsula 01</h3>
+        <p class="slide-desc">Motivo emocional: una pieza que juega con el lado sensible del contenido, cercana y directa.</p>
+        <div class="slide-tags"><span>Edición</span><span>Cápsula</span><span>Vertical</span></div>
+      </div>
+    </div>
+
+    <div class="slide" data-index="1">
+      <div class="slide-media">
+        <video src="assets/footloose_capsula02.mp4" poster="assets/footloose_capsula02_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">02 / 03</span>
+        <h3 class="slide-heading">Cápsula 02</h3>
+        <p class="slide-desc">Motivo R18: un corte con más filo, pensado para una audiencia adulta y un tono más crudo.</p>
+        <div class="slide-tags"><span>Edición</span><span>Cápsula</span><span>Vertical</span></div>
+      </div>
+    </div>
+
+    <div class="slide" data-index="2">
+      <div class="slide-media">
+        <video src="assets/footloose_capsula03.mp4" poster="assets/footloose_capsula03_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">03 / 03</span>
+        <h3 class="slide-heading">Cápsula 03</h3>
+        <p class="slide-desc">Motivo surtido: una mezcla más amplia de recursos, para probar distintos ángulos del mismo mensaje.</p>
+        <div class="slide-tags"><span>Edición</span><span>Cápsula</span><span>Vertical</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay-nav">
+    <button class="nav-btn" data-prev aria-label="Anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="nav-btn" data-next aria-label="Siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="overlay-dots" data-dots>
+    <div class="overlay-dot active" data-slide="0"></div>
+    <div class="overlay-dot" data-slide="1"></div>
+    <div class="overlay-dot" data-slide="2"></div>
+  </div>
+</div>
+
+<!-- ============ REDBULL PROJECT OVERLAY ============ -->
+<div class="overlay" id="overlay-redbull">
+  <div class="overlay-header">
+    <div class="overlay-title">Red Bull <span>— Final Nacional Perú</span></div>
+    <button class="overlay-close" data-close aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6L18 18M18 6L6 18"/></svg>
+    </button>
+  </div>
+
+  <div class="slides" data-slides>
+    <div class="slide" data-index="0">
+      <div class="slide-media">
+        <video src="assets/trofeo.mp4" poster="assets/trofeo_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">01 / 03</span>
+        <h3 class="slide-heading">Final Nacional Perú</h3>
+        <p class="slide-desc">La final del torneo, capturada en el momento en que se decide todo: el trofeo en alto y la reacción del equipo campeón.</p>
+        <div class="slide-tags"><span>Dirección</span><span>Edición</span><span>Vertical</span></div>
+      </div>
+    </div>
+
+    <div class="slide" data-index="1">
+      <div class="slide-media">
+        <video src="assets/recap.mp4" poster="assets/recap_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">02 / 03</span>
+        <h3 class="slide-heading">Recap de la Final</h3>
+        <p class="slide-desc">Un repaso al ritmo del torneo entero: los mejores momentos de la final, editados para revivir la tensión de principio a fin.</p>
+        <div class="slide-tags"><span>Edición</span><span>Recap</span><span>Vertical</span></div>
+      </div>
+    </div>
+
+    <div class="slide" data-index="2">
+      <div class="slide-media">
+        <video src="assets/cta.mp4" poster="assets/cta_poster.jpg" muted loop playsinline preload="metadata"></video>
+        <button class="slide-sound" aria-label="Activar sonido">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+        </button>
+      </div>
+      <div class="slide-info">
+        <span class="slide-index">03 / 03</span>
+        <h3 class="slide-heading">Call to Action — Gaming LoL</h3>
+        <p class="slide-desc">Pieza de convocatoria para el próximo evento gaming, pensada para generar hype y llevar tráfico directo a la inscripción.</p>
+        <div class="slide-tags"><span>Dirección</span><span>CTA</span><span>Evento</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay-nav">
+    <button class="nav-btn" data-prev aria-label="Anterior">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="nav-btn" data-next aria-label="Siguiente">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div class="overlay-dots" data-dots>
+    <div class="overlay-dot active" data-slide="0"></div>
+    <div class="overlay-dot" data-slide="1"></div>
+    <div class="overlay-dot" data-slide="2"></div>
+  </div>
+</div>
+
+<!-- ============ DANIMORAN STUDIO PROJECT OVERLAY ============ -->
+<div class="overlay cinema" id="overlay-danimoran">
+  <div class="overlay-header">
+    <div class="overlay-title">Danimoran Studio <span>— Lanzamiento Web</span></div>
+    <button class="overlay-close" data-close aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6L18 18M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="cinema-stage">
+    <div class="cinema-frame">
+      <video src="assets/danimoran.mp4" poster="assets/danimoran_poster.jpg" muted loop playsinline preload="metadata"></video>
+      <button class="slide-sound" aria-label="Activar sonido">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+      </button>
+      <div class="cinema-caption">
+        <h3>Nueva Web, Nueva Identidad</h3>
+        <p>Pieza de lanzamiento para el nuevo sitio de Danimoran Studio, pensada para presentar la marca con impacto desde el primer segundo.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SICLO PROJECT OVERLAY ============ -->
+<div class="overlay cinema" id="overlay-siclo">
+  <div class="overlay-header">
+    <div class="overlay-title">Siclo <span>— Lanzamiento Suscripción</span></div>
+    <button class="overlay-close" data-close aria-label="Cerrar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 6L18 18M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="cinema-stage">
+    <div class="cinema-frame">
+      <video src="assets/siclo.mp4" poster="assets/siclo_poster.jpg" muted loop playsinline preload="metadata"></video>
+      <button class="slide-sound" aria-label="Activar sonido">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10v4h4l5 5V5L7 10H3z"/><path d="M17 8a5 5 0 010 8" stroke-opacity="0.4"/></svg>
+      </button>
+      <div class="cinema-caption">
+        <h3>Únete a la membresía</h3>
+        <p>Video de lanzamiento para la nueva suscripción de Siclo, invitando a sumarse a la experiencia wellness.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="contact" id="contact">
+  <div class="contact-eyebrow">Disponible para nuevos proyectos</div>
+  <h1 class="contact-title">¿Tienes una<br><em>idea?</em> Hablemos.</h1>
+  <div class="contact-actions">
+    <a class="btn-primary" href="mailto:alvapolo1@gmail.com">
+      alvapolo1@gmail.com
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H8M17 7V16"/></svg>
+    </a>
+  </div>
+
+  <div class="contact-footer">
+    <div>© 2026 Alvaro Apolo. Todos los derechos reservados.</div>
+    <div class="socials">
+      <a href="#">Instagram</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // live timecode
+  const tc = document.getElementById('timecode');
+  const fps = 24;
+  let frame = 0;
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function tick(){
+    frame++;
+    const totalSec = Math.floor(frame / fps);
+    const f = frame % fps;
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+    tc.textContent = `${pad(h)}:${pad(m)}:${pad(s)}:${pad(f)}`;
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  // theme toggle
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('themeToggle');
+  themeBtn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeBtn.setAttribute('aria-label', isDark ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
+  });
+
+  // scroll scrubber
+  const scrubFill = document.getElementById('scrubFill');
+  const scrubHead = document.getElementById('scrubHead');
+  const scrubMarks = document.getElementById('scrubMarks');
+  const sections = [
+    { id: 'hero', label: 'Inicio' },
+    { id: 'work', label: 'Trabajo' },
+    { id: 'contact', label: 'Contacto' }
+  ];
+
+  function layoutMarks(){
+    scrubMarks.innerHTML = '';
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    sections.forEach(sec => {
+      const el = document.getElementById(sec.id);
+      const percent = docHeight > 0 ? (el.offsetTop / docHeight) * 100 : 0;
+      const mark = document.createElement('div');
+      mark.className = 'scrubber-mark';
+      mark.style.left = Math.min(Math.max(percent, 2), 98) + '%';
+      mark.textContent = sec.label;
+      mark.dataset.id = sec.id;
+      scrubMarks.appendChild(mark);
+    });
+  }
+
+  function updateScrub(){
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+    scrubFill.style.width = percent + '%';
+    scrubHead.style.left = percent + '%';
+
+    let current = sections[0].id;
+    sections.forEach(sec => {
+      const el = document.getElementById(sec.id);
+      if (window.scrollY >= el.offsetTop - window.innerHeight * 0.4) current = sec.id;
+    });
+    document.querySelectorAll('.scrubber-mark').forEach(m => {
+      m.classList.toggle('active', m.dataset.id === current);
+    });
+  }
+
+  window.addEventListener('scroll', updateScrub);
+  window.addEventListener('resize', () => { layoutMarks(); updateScrub(); });
+  layoutMarks();
+  updateScrub();
+
+  // ---------- project overlays: horizontal slide decks (works for any number of projects) ----------
+  function initOverlay(overlay){
+    const slidesEl = overlay.querySelector('[data-slides]');
+    const slideEls = Array.from(overlay.querySelectorAll('.slide'));
+    const dots = Array.from(overlay.querySelectorAll('.overlay-dot'));
+    const navPrev = overlay.querySelector('[data-prev]');
+    const navNext = overlay.querySelector('[data-next]');
+    const closeBtn = overlay.querySelector('[data-close]');
+    let activeSlide = 0;
+    let bodyScrollY = 0;
+
+    function open(){
+      bodyScrollY = window.scrollY;
+      overlay.classList.add('open');
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${bodyScrollY}px`;
+      document.body.style.width = '100%';
+      goTo(0, false);
+    }
+
+    function close(){
+      overlay.classList.remove('open');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, bodyScrollY);
+      slideEls.forEach(s => { const v = s.querySelector('video'); v.pause(); });
+    }
+
+    function goTo(i, smooth = true){
+      activeSlide = Math.max(0, Math.min(slideEls.length - 1, i));
+      slidesEl.scrollTo({ left: activeSlide * slidesEl.clientWidth, behavior: smooth ? 'smooth' : 'auto' });
+      updateActive();
+    }
+
+    function updateActive(){
+      slideEls.forEach((s, idx) => {
+        const video = s.querySelector('video');
+        if (idx === activeSlide){
+          s.classList.add('is-active');
+          video.currentTime = 0;
+          video.play().catch(()=>{});
+        } else {
+          s.classList.remove('is-active');
+          video.pause();
+        }
+      });
+      dots.forEach((d, idx) => d.classList.toggle('active', idx === activeSlide));
+      navPrev.disabled = activeSlide === 0;
+      navNext.disabled = activeSlide === slideEls.length - 1;
+    }
+
+    let scrollTimeout;
+    slidesEl.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const idx = Math.round(slidesEl.scrollLeft / slidesEl.clientWidth);
+        if (idx !== activeSlide){ activeSlide = idx; updateActive(); }
+      }, 90);
+    });
+
+    closeBtn.addEventListener('click', close);
+    navPrev.addEventListener('click', () => goTo(activeSlide - 1));
+    navNext.addEventListener('click', () => goTo(activeSlide + 1));
+    dots.forEach((d, idx) => d.addEventListener('click', () => goTo(idx)));
+
+    document.addEventListener('keydown', (e) => {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowRight') goTo(activeSlide + 1);
+      if (e.key === 'ArrowLeft') goTo(activeSlide - 1);
+    });
+
+    overlay.querySelectorAll('.slide-sound').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const video = btn.previousElementSibling;
+        video.muted = !video.muted;
+        btn.style.opacity = video.muted ? '1' : '0.55';
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      if (overlay.classList.contains('open')) goTo(activeSlide, false);
+    });
+
+    return { open };
+  }
+
+  function initCinema(overlay){
+    const video = overlay.querySelector('video');
+    const closeBtn = overlay.querySelector('[data-close]');
+    const soundBtn = overlay.querySelector('.slide-sound');
+    let bodyScrollY = 0;
+
+    function open(){
+      bodyScrollY = window.scrollY;
+      overlay.classList.add('open');
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${bodyScrollY}px`;
+      document.body.style.width = '100%';
+      video.currentTime = 0;
+      video.play().catch(()=>{});
+    }
+
+    function close(){
+      overlay.classList.remove('open');
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      window.scrollTo(0, bodyScrollY);
+      video.pause();
+    }
+
+    closeBtn.addEventListener('click', close);
+    document.addEventListener('keydown', (e) => {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape') close();
+    });
+    if (soundBtn){
+      soundBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        video.muted = !video.muted;
+        soundBtn.style.opacity = video.muted ? '1' : '0.55';
+      });
+    }
+
+    return { open };
+  }
+
+  const overlayControllers = {};
+  document.querySelectorAll('.overlay').forEach(overlayEl => {
+    const key = overlayEl.id.replace('overlay-', '');
+    overlayControllers[key] = overlayEl.classList.contains('cinema') ? initCinema(overlayEl) : initOverlay(overlayEl);
+  });
+
+  document.querySelectorAll('[data-project]').forEach(el => {
+    const key = el.dataset.project;
+    const controller = overlayControllers[key];
+    if (!controller) return;
+    el.addEventListener('click', controller.open);
+    el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); controller.open(); } });
+  });
+</script>
+
+</body>
+</html>
